@@ -88,12 +88,14 @@ lib/microcms.js    共通処理（microCMS通信、ページの枠、キャッ�
 
 ---
 
-## 3. 既存デザインの移植
+## 3. デザイン・固定ページ
 
-- `public/index.html` の「▼ここに既存の index.html の中身を移植」の部分に、今のHPイメージの中身を入れる
-- 取り組み・バリューなどの固定ページは `public/torikumi.html`、`public/value.html` のように置けばそのまま公開される
-- スタッフ・お知らせページの共通ヘッダー／フッターは `lib/microcms.js` の `page()` 関数で作っているので、ナビを変えたらここも合わせる
-- 色やレイアウトは `public/assets/style.css`（オリーブ・コーラル・クリーム・セージの仮スタイル）
+- トップ（`public/index.html`）は既存デザインを移植済み。お知らせ欄だけ microCMS から最新3件を自動表示
+- バナー画像は **`public/images/banner.png`** に置く
+- 「中核となる取り組み」「バリュー」は **`public/core.html`、`public/values.html`** として置く
+  - その際、ページ内のリンクを `index.html`→`/`、`staff.html`→`/staff/`、`news.html`→`/news/` に直し、`<style>`2つを `<link rel="stylesheet" href="/assets/style.css">` に置き換える
+- スタッフ・お知らせページのヘッダー／フッターは `lib/microcms.js` で作っている。**住所・電話などフッターを変えたら、index.html と lib/microcms.js の両方を直す**
+- 共通スタイルは `public/assets/style.css`
 
 ---
 

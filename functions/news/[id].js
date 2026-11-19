@@ -1,5 +1,5 @@
 // /news/<コンテンツID> … お知らせ詳細
-import { cms, esc, fmtDate, imgUrl, first, isSafeId, page, html, errorPage } from '../../lib/microcms.js';
+import { cms, esc, fmtDate, imgUrl, first, tagHtml, isSafeId, page, html, errorPage } from '../../lib/microcms.js';
 
 export async function onRequestGet({ env, params, request }) {
   const toList = () => Response.redirect(new URL('/news/', request.url).toString(), 302);
@@ -13,13 +13,18 @@ export async function onRequestGet({ env, params, request }) {
     return html(
       page({
         title: n.title,
-        body: `<article class="container news-detail">
-  <p class="meta"><time>${fmtDate(n.date)}</time><span class="tag">${esc(first(n.category))}</span></p>
-  <h1>${esc(n.title)}</h1>
-  ${n.thumbnail ? `<img class="thumb" src="${imgUrl(n.thumbnail, 1000)}" alt="">` : ''}
-  <div class="body">${n.body || ''}</div>
+        active: 'news',
+        body: `<section class="page">
+<div class="wrap narrow">
+<article class="article">
+<p class="meta"><time>${fmtDate(n.date)}</time>${tagHtml(first(n.category))}</p>
+<h1>${esc(n.title)}</h1>
+${n.thumbnail ? `<img class="thumb" src="${imgUrl(n.thumbnail, 1000)}" alt="">` : ''}
+<div class="body">${n.body || ''}</div>
 </article>
-<p class="container back"><a href="/news/">← お知らせ一覧へ</a></p>`,
+<div class="back"><a class="btn-outline" href="/news/">お知らせ一覧へ</a></div>
+</div>
+</section>`,
       }),
     );
   } catch (e) {

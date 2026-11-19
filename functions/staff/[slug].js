@@ -3,12 +3,11 @@
 import { cms, esc, nl2br, imgUrl, first, isSafeId, page, html, errorPage } from '../../lib/microcms.js';
 
 export async function onRequestGet({ env, params, request }) {
-  const slug = params.slug;
   const toList = () => Response.redirect(new URL('/staff/', request.url).toString(), 302);
-  if (!isSafeId(slug)) return toList();
+  if (!isSafeId(params.slug)) return toList();
 
   try {
-    const s = await cms(env, `staff/${slug}`);
+    const s = await cms(env, `staff/${params.slug}`);
     if (!s) return toList();
 
     const rows = [
@@ -22,17 +21,24 @@ export async function onRequestGet({ env, params, request }) {
     return html(
       page({
         title: s.name,
-        description: `${first(s.role)} ${s.name}`,
-        body: `<section class="container staff-detail">
-  ${s.photo ? `<img class="photo" src="${imgUrl(s.photo, 600)}" alt="${esc(s.name)}" width="300" height="300">` : ''}
-  <div class="info">
-    <p class="role">${esc(first(s.role))}</p>
-    <h1>${esc(s.name)}${s.kana ? `<small>${esc(s.kana)}</small>` : ''}</h1>
-    ${s.message ? `<div class="message">${nl2br(s.message)}</div>` : ''}
-    ${rows ? `<dl>${rows}</dl>` : ''}
-  </div>
-</section>
-<p class="container back"><a href="/staff/">← スタッフ一覧へ</a></p>`,
+        description: `${first(s.role)} ${s.name}｜スタッフ紹介`,
+        active: 'staff',
+        body: `<section class="page">
+<div class="wrap narrow">
+<div class="staff-profile">
+${s.photo ? `<img class="photo" src="${imgUrl(s.photo, 600)}" alt="${esc(s.name)}" width="260" height="260">` : ''}
+<div class="info">
+${first(s.role) ? `<span class="role">${esc(first(s.role))}</span>` : ''}
+<h1>${esc(s.name)}</h1>
+${s.kana ? `<div class="kana">${esc(s.kana)}</div>` : ''}
+<div class="bar"></div>
+${s.message ? `<div class="message">${nl2br(s.message)}</div>` : ''}
+${rows ? `<dl>${rows}</dl>` : ''}
+</div>
+</div>
+<div class="back"><a class="btn-outline" href="/staff/">スタッフ一覧へ</a></div>
+</div>
+</section>`,
       }),
     );
   } catch (e) {
